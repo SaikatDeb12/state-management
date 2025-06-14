@@ -1,33 +1,48 @@
-import { useState } from "react";
+import { createContext, useContext, useState } from "react";
 import "./App.css";
+
+//defining the content globally
+const BulbContext = createContext();
 
 const App = () => {
   const [bulbOn, setBulbOn] = useState(true);
   return (
     <div>
-      <LightBulb bulbOn={bulbOn} setBulbOn={setBulbOn} />
+      {/* Wrapping it within the context provider */}
+      <BulbContext.Provider
+        value={{
+          bulbOn: bulbOn,
+          setBulbOn: setBulbOn,
+        }}
+      >
+        <Light />
+      </BulbContext.Provider>
     </div>
   );
 };
 
-const Light = ({ bulbOn, setBulbOn }) => {
+const Light = () => {
   return (
     <div>
-      <LightBulb bulbOn={bulbOn} />
-      <LightSwitch bulbOn={bulbOn} setBulbOn={setBulbOn} />
+      <LightBulb />
+      <LightSwitch />
     </div>
   );
 };
 
-const LightBulb = ({ bulbOn }) => {
+const LightBulb = () => {
+  //using it making a useContext
+  const { bulbOn } = useContext(BulbContext);
   return <div>{bulbOn}</div>;
 };
 
-const LightSwitch = ({ bulbOn, setBulbOn }) => {
+const LightSwitch = () => {
+  const { bulbOn, setBulbOn } = useContext(BulbContext);
   return (
     <div>
-      <button>Toggle the button</button>
-      {bulbOn}
+      {bulbOn ? "Bulb On" : "Bulb Off"}
+      <br />
+      <button onClick={() => setBulbOn(!bulbOn)}>Toggle the button</button>
     </div>
   );
 };
